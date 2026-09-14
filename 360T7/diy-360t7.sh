@@ -10,8 +10,8 @@ log() { echo ">>> [360T7] $*"; }
 # ============================================================
 # 基础设置（IP）
 # ============================================================
-log "设置默认 IP → 192.168.321.1"
-sed -i 's/192.168.6.1/192.168.321.1/g' package/base-files/files/bin/config_generate
+log "设置默认 IP → 192.168.125.1"
+sed -i 's/192.168.6.1/192.168.125.1/g' package/base-files/files/bin/config_generate
 
 # ============================================================
 # Golang + lang rust（部分插件编译依赖）
@@ -30,6 +30,22 @@ git clone https://github.com/sbwml/packages_lang_rust feeds/packages/lang/rust
 log "清理冲突包"
 rm -rf feeds/packages/net/nikki 2>/dev/null || true
 rm -rf feeds/luci/applications/luci-app-nikki 2>/dev/null || true
+rm -rf feeds/luci/applications/luci-app-passwall 2>/dev/null || true
+rm -rf feeds/packages/net/xray-core 2>/dev/null || true
+rm -rf feeds/packages/net/sing-box 2>/dev/null || true
+rm -rf feeds/packages/net/hysteria 2>/dev/null || true
+rm -rf feeds/packages/net/chinadns-ng 2>/dev/null || true
+rm -rf feeds/packages/net/dns2socks 2>/dev/null || true
+rm -rf feeds/packages/net/ipt2socks 2>/dev/null || true
+rm -rf feeds/packages/net/microsocks 2>/dev/null || true
+rm -rf feeds/packages/net/tcping 2>/dev/null || true
+
+# ============================================================
+# 克隆官方 Passwall + 依赖
+# ============================================================
+log "克隆官方 Passwall"
+git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages.git package/passwall-packages
+git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall.git package/passwall
 
 # ============================================================
 # 克隆第三方插件
@@ -105,6 +121,8 @@ cat > package/base-files/files/etc/opkg/customfeeds.conf << 'EOF'
 src/gz openwrt_kiddin9 https://dl.openwrt.ai/latest/packages/aarch64_cortex-a53/kiddin9
 EOF
 
+log "完成 ✓"
+
 # ============================================================
 # 注释说明：softethervpn / ttyd 依赖
 # ============================================================
@@ -116,5 +134,3 @@ EOF
 # cp -r /tmp/iw-pkgs/net/softethervpn package/softethervpn 2>/dev/null || true
 # cp -r /tmp/iw-pkgs/utils/ttyd package/ttyd 2>/dev/null || true
 # rm -rf /tmp/iw-pkgs
-
-log "完成 ✓"
